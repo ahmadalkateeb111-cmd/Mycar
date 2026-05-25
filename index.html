@@ -22,6 +22,8 @@
         .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 4px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; }
         .note { background-color: #eef4f8; border-right: 3px solid #1a2a3a; padding: 10px; font-size: 12px; margin-top: 10px; border-radius: 4px; }
         .history-row input { width: 88%; padding: 5px; font-size: 11px; }
+        /* تكبير خانة التاريخ المخصصة */
+        .history-row input.oil-date { width: 92%; min-width: 85px; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -50,7 +52,7 @@
         <table id="oil_history_table">
             <thead>
                 <tr>
-                    <th>التاريخ</th>
+                    <th style="width: 18%;">التاريخ</th>
                     <th>نوع الزيت والشركة</th>
                     <th>العيار / اللزوجة</th>
                     <th>العداد الحالي</th>
@@ -93,7 +95,8 @@
                 if (savedValue) { document.getElementById(field).value = savedValue; }
             });
 
-            const savedHistory = localStorage.getItem('oil_history_records_v3');
+            // دعم التوافقية وقراءة البيانات من كل المفاتيح المحتملة لمنع الاختفاء
+            const savedHistory = localStorage.getItem('oil_history_records_v4') || localStorage.getItem('oil_history_records_v3');
             if (savedHistory) {
                 const records = JSON.parse(savedHistory);
                 records.forEach(rec => addOilRecord(rec.date, rec.brand, rec.gauge, rec.current, rec.next));
@@ -108,7 +111,7 @@
             row.className = 'history-row';
             
             row.innerHTML = `
-                <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر"></td>
+                <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر/سنة"></td>
                 <td><input type="text" class="oil-brand" value="${brand}" placeholder="مثال: Liqui Moly"></td>
                 <td><input type="text" class="oil-gauge" value="${gauge}" placeholder="مثال: 5W-30"></td>
                 <td><input type="text" class="oil-curr" value="${current}" placeholder="عداد كم"></td>
@@ -145,7 +148,7 @@
                 }
             });
             
-            localStorage.setItem('oil_history_records_v3', JSON.stringify(oilRecords));
+            localStorage.setItem('oil_history_records_v4', JSON.stringify(oilRecords));
             alert('✅ تم حفظ كافة البيانات وتحديث السجل بنجاح!');
         }
     </script>
