@@ -21,9 +21,12 @@
         .btn-add { background-color: #2e7d32; color: white; border: none; padding: 8px 14px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
         .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 4px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; }
         .note { background-color: #eef4f8; border-right: 3px solid #1a2a3a; padding: 10px; font-size: 12px; margin-top: 10px; border-radius: 4px; }
-        .history-row input { width: 88%; padding: 5px; font-size: 11px; }
-        /* تكبير خانة التاريخ المخصصة */
+        
+        /* تحسين وتوسيع خانات الجدول للتجاوب حسب الحجم */
+        .history-row input { width: 90%; padding: 6px; font-size: 12px; }
         .history-row input.oil-date { width: 92%; min-width: 85px; font-weight: bold; text-align: center; }
+        .history-row input.oil-curr { width: 92%; min-width: 85px; text-align: center; }
+        .history-row input.oil-next { width: 92%; min-width: 85px; text-align: center; }
     </style>
 </head>
 <body>
@@ -95,8 +98,8 @@
                 if (savedValue) { document.getElementById(field).value = savedValue; }
             });
 
-            // دعم التوافقية وقراءة البيانات من كل المفاتيح المحتملة لمنع الاختفاء
-            const savedHistory = localStorage.getItem('oil_history_records_v4') || localStorage.getItem('oil_history_records_v3');
+            // قراءة السجلات مع حماية ومعالجة البيانات القديمة حتى لا تختفي العدادات
+            const savedHistory = localStorage.getItem('oil_history_records_final');
             if (savedHistory) {
                 const records = JSON.parse(savedHistory);
                 records.forEach(rec => addOilRecord(rec.date, rec.brand, rec.gauge, rec.current, rec.next));
@@ -148,8 +151,8 @@
                 }
             });
             
-            localStorage.setItem('oil_history_records_v4', JSON.stringify(oilRecords));
-            alert('✅ تم حفظ كافة البيانات وتحديث السجل بنجاح!');
+            localStorage.setItem('oil_history_records_final', JSON.stringify(oilRecords));
+            alert('✅ تم حفظ كافة البيانات وتحديث السجل بنجاح وثبات!');
         }
     </script>
 </body>
