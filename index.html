@@ -5,33 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم صيانة المركبة المتكاملة</title>
     <style>
+        /* إعدادات عامة للتجاوب */
+        * { box-sizing: border-box; }
         body { font-family: system-ui, -apple-system, sans-serif; background-color: #f4f6f8; color: #333; margin: 0; padding: 15px; direction: rtl; }
+        
+        /* الهيدر والعناوين */
         .header { background-color: #1a2a3a; color: white; text-align: center; padding: 20px; border-radius: 8px; border-bottom: 4px solid #cca43b; margin-bottom: 20px; }
         .header h1 { margin: 0; font-size: 20px; }
         .header p { margin: 5px 0 0 0; font-size: 13px; color: #b0c4de; }
         .section-title { font-size: 16px; color: #1a2a3a; border-right: 4px solid #cca43b; padding-right: 8px; margin: 25px 0 10px 0; font-weight: bold; }
         .card { background: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        th, td { border: 1px solid #e1e8ed; padding: 8px; text-align: right; font-size: 12px; }
-        th { background-color: #2c3e50; color: white; font-size: 12px; }
+        
+        /* الجداول وتوزيع المساحات */
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; table-layout: fixed; }
+        th, td { border: 1px solid #e1e8ed; padding: 8px; text-align: right; font-size: 12px; overflow: hidden; }
+        th { background-color: #2c3e50; color: white; font-size: 12px; text-align: center; }
         tr:nth-child(even) { background-color: #f9fbfd; }
-        input { width: 92%; padding: 7px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background-color: #fffbfa; box-sizing: border-box; }
+        
+        /* الخانات الأساسية */
+        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background-color: #fffbfa; }
+        
+        /* الأزرار والتنبيهات */
         .btn-save { background-color: #cca43b; color: white; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; margin-top: 20px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .btn-save:active { background-color: #1a2a3a; }
         .btn-add { background-color: #2e7d32; color: white; border: none; padding: 8px 14px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
-        .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 5px 0; font-size: 11px; border-radius: 4px; cursor: pointer; width: 100%; text-align: center; }
         .note { background-color: #eef4f8; border-right: 3px solid #1a2a3a; padding: 10px; font-size: 12px; margin-top: 10px; border-radius: 4px; }
         
-        /* توسيع شامل لجميع خانات جدول الإدخال لتعبئة الحجم تلقائياً */
-        .history-row input { width: 100%; padding: 8px; font-size: 13px; text-align: center; }
-        .history-row input.oil-date { font-weight: bold; min-width: 90px; }
-        .history-row input.oil-brand { text-align: right; min-width: 100px; }
-        .history-row input.oil-gauge { min-width: 80px; }
-        .history-row input.oil-curr { min-width: 85px; }
-        .history-row input.oil-next { min-width: 85px; }
+        /* تقسيم الأعمدة بدقة وتوسيع خانات الإدخال بالكامل */
+        #oil_history_table th:nth-child(1), #oil_history_table td:nth-child(1) { width: 22%; } /* التاريخ */
+        #oil_history_table th:nth-child(2), #oil_history_table td:nth-child(2) { width: 24%; } /* نوع الزيت */
+        #oil_history_table th:nth-child(3), #oil_history_table td:nth-child(3) { width: 16%; } /* العيار */
+        #oil_history_table th:nth-child(4), #oil_history_table td:nth-child(4) { width: 15%; } /* العداد الحالي */
+        #oil_history_table th:nth-child(5), #oil_history_table td:nth-child(5) { width: 15%; } /* العداد القادم */
+        #oil_history_table th:nth-child(6), #oil_history_table td:nth-child(6) { width: 12%; } /* إجراء الحذف */
 
-        /* تنسيق قسم حقوق النشر والتطوير */
+        /* تنسيق الخانات داخل جدول الزيت لملء العمود تماماً */
+        .history-row input { width: 100%; padding: 8px 4px; font-size: 12px; text-align: center; }
+        .history-row input.oil-brand { text-align: right; } /* محاذاة النص لليمين في اسم الشركة */
+        .history-row input.oil-date { font-weight: bold; }
+
+        /* تنسيق قسم حقوق النشر والتطوير مع الشعار الشخصي */
         .footer-copyright { text-align: center; color: #7f8c8d; font-size: 11px; margin-top: 30px; margin-bottom: 15px; padding: 10px; border-top: 1px solid #e1e8ed; }
+        .footer-logo { font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #cca43b; font-size: 13px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -44,7 +60,11 @@
     <div class="section-title">بيانات المالك والمركبة الأساسية</div>
     <div class="card">
         <table>
-            <tr><th style="width:35%;">البيان</th><th>تفاصيل المركبة</th></tr>
+            <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 65%;">
+            </colgroup>
+            <tr><th>البيان</th><th>تفاصيل المركبة</th></tr>
             <tr><td><strong>اسم صاحب السيارة</strong></td><td><input type="text" id="owner_name" placeholder="أدخل اسم المالك"></td></tr>
             <tr><td><strong>رقم لوحة السيارة</strong></td><td><input type="text" id="car_plate" placeholder="رقم اللوحة والترميز"></td></tr>
             <tr><td><strong>رقم الشاصي (VIN)</strong></td><td><input type="text" id="vin_number" placeholder="رقم الشاصي"></td></tr>
@@ -60,12 +80,12 @@
         <table id="oil_history_table">
             <thead>
                 <tr>
-                    <th style="width: 18%;">التاريخ</th>
+                    <th>التاريخ</th>
                     <th>نوع الزيت والشركة</th>
-                    <th>العيار / اللزوجة</th>
+                    <th>العيار</th>
                     <th>العداد الحالي</th>
                     <th>العداد القادم</th>
-                    <th style="width:10%;">إجراء</th>
+                    <th>إجراء</th>
                 </tr>
             </thead>
             <tbody id="oil_history_body">
@@ -77,6 +97,11 @@
     <div class="section-title">جدول الصيانة الدورية والشاملة</div>
     <div class="card">
         <table>
+            <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 25%;">
+                <col style="width: 40%;">
+            </colgroup>
             <thead>
                 <tr><th>القطعة / الإجراء</th><th>تاريخ / عداد التغيير</th><th>ملاحظات وموعد الفحص</th></tr>
             </thead>
@@ -95,7 +120,7 @@
     <button class="btn-save" onclick="saveAllData()">💾 حفظ كافة التعديلات والبيانات</button>
 
     <div class="footer-copyright">
-        &copy; 2026 جميع الحقوق محفوظة | تم التطوير والتصميم بواسطة <strong>أحمد الخطيب</strong>
+        &copy; 2026 جميع الحقوق محفوظة | تم التطوير والتصميم بواسطة <span class="footer-logo">A.Kh</span>
     </div>
 
     <script>
@@ -123,10 +148,10 @@
             
             row.innerHTML = `
                 <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر/سنة"></td>
-                <td><input type="text" class="oil-brand" value="${brand}" placeholder="الشركة المصنعة"></td>
+                <td><input type="text" class="oil-brand" value="${brand}" placeholder="الشركة"></td>
                 <td><input type="text" class="oil-gauge" value="${gauge}" placeholder="العيار"></td>
-                <td><input type="text" class="oil-curr" value="${current}" placeholder="كم الحالي"></td>
-                <td><input type="text" class="oil-next" value="${next}" placeholder="كم القادم"></td>
+                <td><input type="text" class="oil-curr" value="${current}" placeholder="العداد"></td>
+                <td><input type="text" class="oil-next" value="${next}" placeholder="القادم"></td>
                 <td style="text-align:center;"><button class="btn-delete" onclick="deleteOilRecord(this)">حذف</button></td>
             `;
             tbody.appendChild(row);
