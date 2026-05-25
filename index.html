@@ -35,16 +35,16 @@
     <div class="card">
         <table>
             <tr><th style="width:35%;">البيان</th><th>تفاصيل المركبة</th></tr>
-            <tr><td><strong>اسم صاحب السيارة</strong></td><td><input type="text" id="owner_name" placeholder="أدخل اسم المالك الثلاثي"></td></tr>
+            <tr><td><strong>اسم صاحب السيارة</strong></td><td><input type="text" id="owner_name" placeholder="أدخل اسم المالك"></td></tr>
             <tr><td><strong>رقم لوحة السيارة</strong></td><td><input type="text" id="car_plate" placeholder="رقم اللوحة والترميز"></td></tr>
-            <tr><td><strong>رقم الشاصي (VIN)</strong></td><td><input type="text" id="vin_number" placeholder="رقم الشاصي المكون من 17 خانة"></td></tr>
+            <tr><td><strong>رقم الشاصي (VIN)</strong></td><td><input type="text" id="vin_number" placeholder="رقم الشاصي"></td></tr>
             <tr><td><strong>نوع السيارة وموديلها</strong></td><td><input type="text" id="car_model" placeholder="مثال: كيا K3"></td></tr>
             <tr><td><strong>سنة الصنع</strong></td><td><input type="text" id="car_year" placeholder="مثال: 2017"></td></tr>
             <tr><td><strong>نوع المحرك</strong></td><td><input type="text" id="car_engine" placeholder="GDI / عادي"></td></tr>
         </table>
     </div>
 
-    <div class="section-title">سجل غيارات الزيت والفلاتر (متعدد الخانات)</div>
+    <div class="section-title">سجل غيارات الزيت والفلاتر (متعدد ومتغير الأنواع)</div>
     <div class="card" style="overflow-x: auto;">
         <button class="btn-add" onclick="addOilRecord()">➕ إضافة غيار زيت جديد</button>
         <table id="oil_history_table">
@@ -61,7 +61,7 @@
             <tbody id="oil_history_body">
                 </tbody>
         </table>
-        <div class="note">💡 <strong>ملاحظة الصيانة:</strong> يرجى تغيير فلتر الزيت (السيفون) مع كل غيار زيت محرك للمحافظة على أداء المحرك.</div>
+        <div class="note">💡 <strong>ملاحظة:</strong> يمكنك تحديد نوع وزيت مختلف في كل غيار جديد لحفظ التاريخ التراكمي لسيارتك بدقة.</div>
     </div>
 
     <div class="section-title">جدول الصيانة الدورية والشاملة</div>
@@ -93,7 +93,7 @@
                 if (savedValue) { document.getElementById(field).value = savedValue; }
             });
 
-            const savedHistory = localStorage.getItem('oil_history_records_v2');
+            const savedHistory = localStorage.getItem('oil_history_records_v3');
             if (savedHistory) {
                 const records = JSON.parse(savedHistory);
                 records.forEach(rec => addOilRecord(rec.date, rec.brand, rec.gauge, rec.current, rec.next));
@@ -109,7 +109,7 @@
             
             row.innerHTML = `
                 <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر"></td>
-                <td><input type="text" class="oil-brand" value="${brand}" placeholder="مثال: Shell"></td>
+                <td><input type="text" class="oil-brand" value="${brand}" placeholder="مثال: Liqui Moly"></td>
                 <td><input type="text" class="oil-gauge" value="${gauge}" placeholder="مثال: 5W-30"></td>
                 <td><input type="text" class="oil-curr" value="${current}" placeholder="عداد كم"></td>
                 <td><input type="text" class="oil-next" value="${next}" placeholder="الموعد القادم"></td>
@@ -145,8 +145,8 @@
                 }
             });
             
-            localStorage.setItem('oil_history_records_v2', JSON.stringify(oilRecords));
-            alert('✅ تم حفظ كافة البيانات وتحديث سجل الزيوت والقياسات بنجاح!');
+            localStorage.setItem('oil_history_records_v3', JSON.stringify(oilRecords));
+            alert('✅ تم حفظ كافة البيانات وتحديث السجل بنجاح!');
         }
     </script>
 </body>
