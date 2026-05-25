@@ -12,16 +12,16 @@
         .section-title { font-size: 16px; color: #1a2a3a; border-right: 4px solid #cca43b; padding-right: 8px; margin: 25px 0 10px 0; font-weight: bold; }
         .card { background: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        th, td { border: 1px solid #e1e8ed; padding: 10px; text-align: right; font-size: 13px; }
-        th { background-color: #2c3e50; color: white; }
+        th, td { border: 1px solid #e1e8ed; padding: 8px; text-align: right; font-size: 12px; }
+        th { background-color: #2c3e50; color: white; font-size: 12px; }
         tr:nth-child(even) { background-color: #f9fbfd; }
-        input, select { width: 92%; padding: 7px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; background-color: #fffbfa; }
+        input { width: 90%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; background-color: #fffbfa; }
         .btn-save { background-color: #cca43b; color: white; border: none; padding: 14px 20px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; margin-top: 20px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .btn-save:active { background-color: #1a2a3a; }
         .btn-add { background-color: #2e7d32; color: white; border: none; padding: 8px 14px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 5px; }
-        .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 4px 8px; font-size: 11px; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background-color: #d32f2f; color: white; border: none; padding: 4px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; }
         .note { background-color: #eef4f8; border-right: 3px solid #1a2a3a; padding: 10px; font-size: 12px; margin-top: 10px; border-radius: 4px; }
-        .history-row input { width: 85%; }
+        .history-row input { width: 88%; padding: 5px; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -37,24 +37,25 @@
             <tr><th style="width:35%;">البيان</th><th>تفاصيل المركبة</th></tr>
             <tr><td><strong>اسم صاحب السيارة</strong></td><td><input type="text" id="owner_name" placeholder="أدخل اسم المالك الثلاثي"></td></tr>
             <tr><td><strong>رقم لوحة السيارة</strong></td><td><input type="text" id="car_plate" placeholder="رقم اللوحة والترميز"></td></tr>
-            <tr><td><strong>رقم الشاصي (VIN)</strong></td><td><input type="text" id="vin_number" placeholder="أدخل رقم الشاصي المكون من 17 خانة"></td></tr>
+            <tr><td><strong>رقم الشاصي (VIN)</strong></td><td><input type="text" id="vin_number" placeholder="رقم الشاصي المكون من 17 خانة"></td></tr>
             <tr><td><strong>نوع السيارة وموديلها</strong></td><td><input type="text" id="car_model" placeholder="مثال: كيا K3"></td></tr>
             <tr><td><strong>سنة الصنع</strong></td><td><input type="text" id="car_year" placeholder="مثال: 2017"></td></tr>
             <tr><td><strong>نوع المحرك</strong></td><td><input type="text" id="car_engine" placeholder="GDI / عادي"></td></tr>
-            <tr><td><strong>نوع وزيت المحرك المعتمد</strong></td><td><input type="text" id="oil_type_brand" placeholder="مثال: Total 5W-30 Synthetic"></td></tr>
         </table>
     </div>
 
     <div class="section-title">سجل غيارات الزيت والفلاتر (متعدد الخانات)</div>
-    <div class="card">
+    <div class="card" style="overflow-x: auto;">
         <button class="btn-add" onclick="addOilRecord()">➕ إضافة غيار زيت جديد</button>
         <table id="oil_history_table">
             <thead>
                 <tr>
                     <th>التاريخ</th>
-                    <th>العداد الحالي (كم)</th>
-                    <th>العداد القادم (كم)</th>
-                    <th style="width:15%;">إجراء</th>
+                    <th>نوع الزيت والشركة</th>
+                    <th>العيار / اللزوجة</th>
+                    <th>العداد الحالي</th>
+                    <th>العداد القادم</th>
+                    <th style="width:10%;">إجراء</th>
                 </tr>
             </thead>
             <tbody id="oil_history_body">
@@ -84,74 +85,68 @@
     <button class="btn-save" onclick="saveAllData()">💾 حفظ كافة التعديلات والبيانات</button>
 
     <script>
-        // الحقول الثابتة
-        const staticFields = ['owner_name', 'car_plate', 'vin_number', 'car_model', 'car_year', 'car_engine', 'oil_type_brand', 'spark_data', 'air_data', 'ac_data', 'brakes_data', 'cool_data', 'carbon_data', 'belt_data'];
+        const staticFields = ['owner_name', 'car_plate', 'vin_number', 'car_model', 'car_year', 'car_engine', 'spark_data', 'air_data', 'ac_data', 'brakes_data', 'cool_data', 'carbon_data', 'belt_data'];
 
         window.onload = function() {
-            // استرجاع الحقول الثابتة
             staticFields.forEach(field => {
                 const savedValue = localStorage.getItem(field);
                 if (savedValue) { document.getElementById(field).value = savedValue; }
             });
 
-            // استرجاع سجل غيارات الزيت المتعددة
-            const savedHistory = localStorage.getItem('oil_history_records');
+            const savedHistory = localStorage.getItem('oil_history_records_v2');
             if (savedHistory) {
                 const records = JSON.parse(savedHistory);
-                records.forEach(rec => addOilRecord(rec.date, rec.current, rec.next));
+                records.forEach(rec => addOilRecord(rec.date, rec.brand, rec.gauge, rec.current, rec.next));
             } else {
-                // إضافة سطر فارغ افتراضي إذا كان السجل فارغاً تماماً أول مرة
                 addOilRecord();
             }
         };
 
-        // دالة لإضافة سطر غيار زيت جديد في الجدول
-        function addOilRecord(date = '', current = '', next = '') {
+        function addOilRecord(date = '', brand = '', gauge = '', current = '', next = '') {
             const tbody = document.getElementById('oil_history_body');
             const row = document.createElement('tr');
             row.className = 'history-row';
             
             row.innerHTML = `
-                <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر/سنة"></td>
-                <td><input type="text" class="oil-curr" value="${current}" placeholder="كم"></td>
-                <td><input type="text" class="oil-next" value="${next}" placeholder="كم"></td>
+                <td><input type="text" class="oil-date" value="${date}" placeholder="يوم/شهر"></td>
+                <td><input type="text" class="oil-brand" value="${brand}" placeholder="مثال: Shell"></td>
+                <td><input type="text" class="oil-gauge" value="${gauge}" placeholder="مثال: 5W-30"></td>
+                <td><input type="text" class="oil-curr" value="${current}" placeholder="عداد كم"></td>
+                <td><input type="text" class="oil-next" value="${next}" placeholder="الموعد القادم"></td>
                 <td style="text-align:center;"><button class="btn-delete" onclick="deleteOilRecord(this)">حذف</button></td>
             `;
             tbody.appendChild(row);
         }
 
-        // دالة لحذف سطر غيار زيت محدد
         function deleteOilRecord(btn) {
-            if(confirm('هل أنت متأكد من حذف هذا السجل التاريخي لغيار الزيت؟')) {
+            if(confirm('هل أنت متأكد من حذف هذا السجل لغيار الزيت؟')) {
                 btn.closest('tr').remove();
             }
         }
 
-        // دالة حفظ جميع البيانات
         function saveAllData() {
-            // 1. حفظ الحقول الثابتة
             staticFields.forEach(field => {
                 const value = document.getElementById(field).value;
                 localStorage.setItem(field, value);
             });
 
-            // 2. تجميع وحفظ سجلات غيار الزيت المتعددة
             const rows = document.querySelectorAll('.history-row');
             const oilRecords = [];
             
             rows.forEach(row => {
                 const dateVal = row.querySelector('.oil-date').value;
+                const brandVal = row.querySelector('.oil-brand').value;
+                const gaugeVal = row.querySelector('.oil-gauge').value;
                 const currVal = row.querySelector('.oil-curr').value;
                 const nextVal = row.querySelector('.oil-next').value;
                 
-                // حفظ السطر فقط إذا لم يكن فارغاً بالكامل
-                if(dateVal || currVal || nextVal) {
-                    oilRecords.push({ date: dateVal, current: currVal, next: nextVal });
+                if(dateVal || brandVal || gaugeVal || currVal || nextVal) {
+                    oilRecords.push({ date: dateVal, brand: brandVal, gauge: gaugeVal, current: currVal, next: nextVal });
                 }
             });
             
-            localStorage.setItem('oil_history_records', JSON.stringify(oilRecords));
-            alert('✅ تم حفظ البيانات وتحديث سجل غيارات الزيت بنجاح!');
+            localStorage.setItem('oil_history_records_v2', JSON.stringify(oilRecords));
+            alert('✅ تم حفظ كافة البيانات وتحديث سجل الزيوت والقياسات بنجاح!');
         }
     </script>
 </body>
